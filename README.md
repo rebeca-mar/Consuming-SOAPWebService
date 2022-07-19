@@ -22,12 +22,13 @@ Continuación de: #Producing SOAP Web Service
 
 ### Para crear el proyecto:
 
-Primero visite la página [Spring Initializr](https://start.spring.io) para crear el arquetipo con Maven. Para este proyecto se requiere la versión 8 de Java, la versión 2.5.3 de Spring y agregar la dependencia de Spring Web Services.
+Primero visite la página [Spring Initializr](https://start.spring.io) para crear el arquetipo con Maven. 
+
+Para este proyecto se requiere la versión 8 de Java, la versión 2.5.3 de Spring y agregar la dependencia Spring Web Services.
 
 * Spring Web Services: debe seleccionarse desde _Dependencies_
-
-Debe nombrar el artefacto _artifact_ y el nombre del proyecto _name_ como: **soap-client**
-El nombre del paquete debe ser: **com.example.demo**
+* Debe nombrar el artefacto _artifact_ y el nombre del proyecto _name_ como: **soap-client**
+* El nombre del paquete debe ser: **com.example.demo**
 
 Una vez listo, dé click en **Generate**
 
@@ -41,7 +42,7 @@ Después de seleccionar la opción _Import_ aparecerán más opciones, elija **M
 
 ![Maven; Existing Maven Projects](images/import_project.png "Existing Maven Projects")
 
-Y dé clic en _Continue_
+Y dé clic en _Next_
 
 Despúes elija la ubicación de la carpeta que contiene el arquetipo que anteriormente descargó desde la página [Spring Initializr](https://start.spring.io):
 
@@ -60,19 +61,22 @@ A continuación, desde el POM.xml del proyecto, añadirá la **dependencia jaxb 
 **jaxb Runtime:**
 Jaxb permite almacenar y recuperar datos en memoria en cualquier formato XML, sin la necesidad de implementar un conjunto específico de rutinas de carga y guardado de XML para la estructura de clases del programa.
 
-``<dependency>
-	<groupId>org.glassfish.jaxb</groupId>
-	<artifactId>jaxb-runtime</artifactId>
-  </dependency>``
+
+	<dependency>
+		<groupId>org.glassfish.jaxb</groupId>
+		<artifactId>jaxb-runtime</artifactId>
+	</dependency>
+
+
  
  **Esta excepción del plugin es para trabajar con archivos en XML:**
  Le quita el generate.
  Nos crea un par de clases
  
- ``<plugin>
-	<groupId>org.jvnet.jaxb2.maven2</groupId>
-	<artifactId>maven-jaxb2-plugin</artifactId>
-	<version>0.14.0</version>
+ 	<plugin>
+		<groupId>org.jvnet.jaxb2.maven2</groupId>
+		<artifactId>maven-jaxb2-plugin</artifactId>
+		<version>0.14.0</version>
 	<executions>
 		<execution>
 			<goals>
@@ -89,9 +93,9 @@ Jaxb permite almacenar y recuperar datos en memoria en cualquier formato XML, si
 				</schema>
 			</schemas>
 	</configuration>
-	</plugin>``
+	</plugin>
 
-Después se debe hacer clic en la opción _Project update_, cuya función es descargar las dependencias añadidas, lo cual ayuda a solventar el posible error marcado en el POM.xml sobre la línea 50 dentro de la etiqueta ``<execution>``
+Después haga clic en la opción _Project update_, cuya función es descargar las dependencias añadidas, lo cual le ayudará a solventar el posible error marcado en el POM.xml sobre la línea 50 dentro de la etiqueta ``<execution>``
 
  ![Click derecho en el nombre del proyecto](images/update_project.png "Maven, Project update")
  
@@ -122,38 +126,37 @@ Después cree la clase **CountryClientService**
 
 El código para esta clase es el siguiente:
 
-``package com.example.demo.service;
+	package com.example.demo.service;
 
-import com.example.demo.wsdl.countries.GetCountryRequest;
-import com.example.demo.wsdl.countries.GetCountryResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-import org.springframework.ws.soap.client.core.SoapActionCallback;``
+	import com.example.demo.wsdl.countries.GetCountryRequest;
+	import com.example.demo.wsdl.countries.GetCountryResponse;
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
+	import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+	import org.springframework.ws.soap.client.core.SoapActionCallback;``
+	
+	public class CountryClientService extends WebServiceGatewaySupport {
 
-``public class CountryClientService extends WebServiceGatewaySupport {
+   	private static final Logger log = LoggerFactory.getLogger(CountryClientService.class);
 
-   private static final Logger log = LoggerFactory.getLogger(CountryClientService.class);
+   	public GetCountryResponse getCountry(String country) {
 
-   public GetCountryResponse getCountry(String country) {
+        	GetCountryRequest request = new GetCountryRequest();
+       		request.setName(country);
 
-       GetCountryRequest request = new GetCountryRequest();
-       request.setName(country);
+       		log.info("Requesting location for " + country);
 
-       log.info("Requesting location for " + country);
+       		GetCountryResponse response = (GetCountryResponse) getWebServiceTemplate()
+               		.marshalSendAndReceive("http://localhost:8080/ws/countries", request,
+                       	new SoapActionCallback(""));
 
-       GetCountryResponse response = (GetCountryResponse) getWebServiceTemplate()
-               .marshalSendAndReceive("http://localhost:8080/ws/countries", request,
-                       new SoapActionCallback(""));
-
-       return response;``
-   ``}``
-
-``}``
+       		return response;
+   		}
+	}
 
 Tenga en cuenta que dentro de esta clase el puerto debe ser el 8080; que el paquete no sea _dto_ sino _wsdl_ :**com.example.demo.wsdl.countries**
 
-En esta clase estamos aplicando un "extends", es decir, una herencia de otra clase, cuyo nombre es _WebServiceGatewaySupport_ y nos habilita el template _getWebServiceTemplate_ que se utiliza para generar una petición o un servicio de tipo REST. Al final estamos casteando un tipo _GetCountryResponse_ que tiene un objeto que se llama _country_ y tiene un elemento que se llama _currency_, por lo tanto, tenemos que contestar con ese mismo tipo de objeto.
+En esta clase se aplica un "extends", es decir, una herencia de otra clase, cuyo nombre es _WebServiceGatewaySupport_ y nos habilita el template _getWebServiceTemplate_ que se utiliza para generar una petición o un servicio de tipo REST. Al final estamos casteando un tipo _GetCountryResponse_ que tiene un objeto que se llama _country_ y tiene un elemento que se llama _currency_, por lo tanto, tenemos que contestar con ese mismo tipo de objeto.
 El request viene como tipo String, que es _country_
 
 A través de los setters le da un nombre al objeto, que es el String que estamos mandando. Al final ese objeto _GetCountryRequest_ se envía dentro del template.
@@ -161,17 +164,18 @@ A través de los setters le da un nombre al objeto, que es el String que estamos
 
 ## Configurar Beans. Crear paquete com.example.demo.config y la clase CountryClientConfig
 
-Crear el paquete **config** sobre el paquete **com.example.demo** y dentro del paquete crear la clase **CountryClientConfig**
+Creae un nuevo paquete y nómbrelo **config**, el cual debe encontrarse sobre el paquete **com.example.demo**. 
+
+Dentro del paquete cree la clase **CountryClientConfig**
 
 ¿Qué hacen los beans?
-El primero crea un objeto que nos ayuda a parsear estos XML y son los que lo inyectan en el servicio. El primer bean crea y lo inyecta en el segundo bean; el segundo bean lo inyecta en el servicio.
-
-Esta clase parsea los XML.
+El primer bean crea un objeto que ayuda a parsear los XML y son los que lo inyectan en el servicio. El segundo bean lo inyecta en el servicio.
 
 ## Configurar Controller
 
-El controlador va a hacer que todo lo que ya creamos se pueda consumir a través de REST.
-Necesitamos crear el paquete **com.example.demo.controller** y crear la clase **CountryClientController** dentro del paquete.
+El controlador hace que todas las clases que ha creado se pueda consumir a través de REST.
+
+Necesita crear el paquete **com.example.demo.controller** y crear la clase **CountryClientController** dentro del paquete, el cual contenerá dicho Controller.
 
 La anotación **@Restcontroller** habilita toda la configuración de las anotaciones que van dentro de los métodos, por ejemplo **@GetMapping**, que define el método de tipo HTTP, que va dentro de los métodos. Tal anotación va al nivel de la clase.
 
@@ -181,11 +185,11 @@ Se levanta el servicio, buscar las anotaciones de los métodos y levanta los end
 
 ## Ejecutar la aplicación
 
-Ir al paquete **com.example.demo** y dar click en la clase principal **SoapClientApplication**, la cual contiene la anotación **@SpringBootApplication** que lleva todas las configuraciones resumidas.
+Vaya al paquete **com.example.demo** y dé clic en la clase principal **SoapClientApplication**, la cual contiene la anotación **@SpringBootApplication** que lleva todas las configuraciones resumidas.
 
-Entonces es dar click derecho sobre la clase, ir a _Run as... _Java Application_
+Dé click derecho sobre la clase, seleccione _Run as... _Java Application_
 
-Pero hay un detalle, arrojará un error porque el puerto 8080 ya está ocupado por la aplicación **SoapWsApplication**. Lo que debemos hacer es usar otro puerto y para ello, el archivo **application.properties** dentro de la carpeta **src/main/resources** nos va ayudar. Colocamos la propiedad **server.port=8081** guardamos el archivo e intentamos ejecutarlo de nuevo. Ahora debe funcionar.
+Pero hay un detalle, si no ha configurado este proyecto para que se ejecute en un puerto distinto al 8080, arrojará un error porque el puerto 8080 se encontrará ocupado por la aplicación **SoapWsApplication** (servicio SOAP). Lo que debe hacer es usar otro puerto y para ello, el archivo **application.properties** dentro de la carpeta **src/main/resources** le ayudará a realizar la configuración. Coloque la propiedad **server.port=8081**, guarde el archivo e intente ejecutarlo de nuevo. Ahora debe funcionar.
 
 ## Probar con Postman
 
@@ -198,12 +202,12 @@ Los parámetros pueden enviarse desde la URI o como un modelo JSON. En este caso
 
 La estructura de una URI es:
 * Protocolo: http ó https
-* Dominio: domain.com
-* Puerto: cuando es un puerto por defecto cuando es el 80 cuando es por http, no es necesario incluirlo; cuando es por https es el 443 no ocupa incluirlo, tampoco.
-* Path: el nombre incluido dentro del métodoGET, POST, etc.
-* Query String o QUery Parameters: los parámetros a enviar
+* Dominio: domain.com por ejemplo.
+* Puerto: cuando es un puerto por defecto cuando es el 80 cuando es por http, no es necesario incluirlo; cuando es por https es el 443, por lo pronto no se ocupa incluirlo.
+* Path: el nombre incluido dentro del método/verbo GET, POST, etc.
+* Query String o Query Parameters: los parámetros a enviar.
 
-También hay headers que van dentro de la petición. En Postman, consola: si escribo curl ``--location --request GET 'http://localhost:8081/getCountry'`` habrá respuesta con el JSON. Si coloco un verbo PUT, por ejemplo, arrojará un mensaje de que el método no está permitido.
+También hay headers que van dentro de la petición. Por ejemplo, pueden definirse desde la consola de Postman si teclea ``curl --location --request GET 'http://localhost:8081/getCountry'`` Obtendrá respuesta del servicio. Si coloca un método/verbo PUT, por ejemplo, arrojará un mensaje de que el método no está permitido (error 405).
 
 Al final de una petición también hay headers, van localizados en otro lugar de la petición.
 
