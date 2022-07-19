@@ -22,40 +22,40 @@ Continuación de: #Producing SOAP Web Service
 
 ### Para crear el proyecto:
 
-Primero visitar la página [Spring Initializr](https://start.spring.io) para crear el arquetipo con Maven. Para este proyecto se requiere la versión 8 de Java, usar la versión 2.5.3 de Spring y agregar la siguiente dependencia:
+Primero visite la página [Spring Initializr](https://start.spring.io) para crear el arquetipo con Maven. Para este proyecto se requiere la versión 8 de Java, la versión 2.5.3 de Spring y agregar la dependencia de Spring Web Services.
 
 * Spring Web Services: debe seleccionarse desde _Dependencies_
 
-El nombre de _artifact_ y _name_ del proyecto: **soap-client**
+Debe nombrar el artefacto _artifact_ y el nombre del proyecto _name_ como: **soap-client**
 El nombre del paquete debe ser: **com.example.demo**
 
-Una vez listo, dar click en **Generate**
+Una vez listo, dé click en **Generate**
 
-Lo cual nos descargará una carpeta con el arquetipo, el cual procederemos a importarlo a nuestro IDE Eclipse. Recuerda que solo debes seleccionar la carpeta del proyecto para que detecte el **POM.xml**
+Después de realizar esto, comenzará la descarga de una carpeta con el arquetipo, el cual procederemos a importarlo a nuestro IDE Eclipse. Recuerde que solo debe seleccionar la carpeta del proyecto para que detecte el **POM.xml** (_Proyect Object Model_: contiene la información del proyecto y la configuración detallada que utilizará Maven para construir el proyecto.)
 
-Hacer click derecho en la sección de _Project Explorer_ para que aparezca la opción _Import:_
+Haga clic derecho en la sección de _Project Explorer_ del IDE para que aparezca la opción _Import:_
 
-![click derecho en la sección de Project Explorer](images/right_click_on_project_explorer.png "Click derecho en Project Explorer")
+![clic derecho en la sección de Project Explorer](images/right_click_on_project_explorer.png "Click derecho en Project Explorer")
 
-Después de seleccionar la opción _Import_ tenemos varias opciones, elegimos **Maven** --> **Existing Maven Projects**
+Después de seleccionar la opción _Import_ aparecerán más opciones, elija **Maven** --> **Existing Maven Projects**
 
 ![Maven; Existing Maven Projects](images/import_project.png "Existing Maven Projects")
 
-Y damos click en _Continue_
+Y dé clic en _Continue_
 
-Despúes elegimos la ubicación de la carpeta que contiene el arquetipo que descargamos desde Spring Initialzr:
+Despúes elija la ubicación de la carpeta que contiene el arquetipo que anteriormente descargó desde la página [Spring Initializr](https://start.spring.io):
 
-![Dar click en Browse](images/browsing_folder.png "Click en Browse") 
+![Dar clic en Browse](images/browsing_folder.png "Clic en Browse") 
 
-Y desde el explorador de Windows, seleccionamos la carpeta **soap-client**
+Desde el explorador de Windows, seleccione la carpeta **soap-client**
 
-![Seleccionamos la carpeta que contiene el arquetipo](images/selecting_folder.png "Ubicacion deseada")
+![Seleccione la carpeta que contiene el arquetipo](images/selecting_folder.png "Ubicacion deseada")
 
-Una vez cargue el proyecto, damos click en el **POM.xml**
+Una vez concluya la carga del proyecto, dé doble clic en **POM.xml** para ver su contenido. Haga clic en la pestaña _Source_.
 
 ![Abrir POM.xml](images/pom_location.png "")
 
-A continuación, desde el POM.xml del proyecto, se añadirá la siguiente dependencia y un plugin, cuidando que las etiquetas se encuentren dentro de sus respectivos bloques:
+A continuación, desde el POM.xml del proyecto, añadirá la **dependencia jaxb Runtime** y **un plugin**. Tenga cuidado con la apertura y cierre de etiquetas; tenga en cuenta que las etiquetas se encuentren dentro de sus respectivos bloques para evitar errores:
 
 **jaxb Runtime:**
 Jaxb permite almacenar y recuperar datos en memoria en cualquier formato XML, sin la necesidad de implementar un conjunto específico de rutinas de carga y guardado de XML para la estructura de clases del programa.
@@ -69,39 +69,39 @@ Jaxb permite almacenar y recuperar datos en memoria en cualquier formato XML, si
  Le quita el generate.
  Nos crea un par de clases
  
- ``<plugin>``
-	``<groupId>org.jvnet.jaxb2.maven2</groupId>``
-	``<artifactId>maven-jaxb2-plugin</artifactId>``
-	``<version>0.14.0</version>``
-	``<executions>``
-		``<execution>``
-			``<goals>``
-				``<goal>generate</goal>``
-			``</goals>``
-		``</execution>``
-	``</executions>``
-	``<configuration>``
-		``<schemaLanguage>WSDL</schemaLanguage>``
-		``<generatePackage>com.example.demo.wsdl.countries</generatePackage>``
-			``<schemas>``
-				``<schema>``
-					``<url>http://localhost:8080/ws/countries.wsdl</url>``
-				``</schema>``
-			``</schemas>``
-	``</configuration>``
-	``</plugin>``
+ ``<plugin>
+	<groupId>org.jvnet.jaxb2.maven2</groupId>
+	<artifactId>maven-jaxb2-plugin</artifactId>
+	<version>0.14.0</version>
+	<executions>
+		<execution>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+		</execution>
+	</executions>
+	<configuration>
+		<schemaLanguage>WSDL</schemaLanguage>
+		<generatePackage>com.example.demo.wsdl.countries</generatePackage>
+			<schemas>
+				<schema>
+					<url>http://localhost:8080/ws/countries.wsdl</url>
+				</schema>
+			</schemas>
+	</configuration>
+	</plugin>``
 
-Después se debe hacer un _Project update_ para resolver la descarga de dependencias añadidas y también resolver el posible error marcado en el POM.xml sobre la línea 50 dentro de la etiqueta <execution>
+Después se debe hacer clic en la opción _Project update_, cuya función es descargar las dependencias añadidas, lo cual ayuda a solventar el posible error marcado en el POM.xml sobre la línea 50 dentro de la etiqueta ``<execution>``
 
  ![Click derecho en el nombre del proyecto](images/update_project.png "Maven, Project update")
  
 
-Para lo cual es importante que en el puerto 8080 esté en ejecución el wsdl de countries previamente hecho, el servicio **SoapWsApplication**, el cual actualmente está sirviendo desde el puerto 8080 para consumirlo y generar las clases respectivas para el servicio REST; posteriormente, para comprobar que funciona, en lugar de verlo a través de SOAP UI, lo haremos desde Postman, porque se trata de un objeto JSON y no de un XML.
+Ahora, es importante que se encuentre en ejecución en el puerto 8080 el WSDL de countries previamente hecho (_véase repositorio complemento_), es decir, el servicio **SoapWsApplication**, para consumirlo y generar las clases para desarrollar el servicio REST. Al concluir el desarrollo de dicho REST comprobará que funciona a través del envío de una petición a través de la herramienta Postman. También puede enviar la petición a través de la herramienta SOAP UI, sin embargo, hacerlo desde Postman le familiarizará para que lo maneje y le ayude a sacar mayor ventaja a sus funciones.
 
-Aquí las clases se crean a partir de un WSDL y no de un XSD.
+En un servicio REST, las clases se crean a partir de un WSDL y no de un XSD, a diferencia de un SOAP.
 
 ``<url>http://localhost:8080/ws/countries.wsdl</url>``
-Esta dirección de la sentencia del plugin es muy importante porque quiere decir que va a esta ruta a consumir el WSDL (es decir, descarga _countries.wsdl_ ) y genera las clases a partir de éste. Las clases generadas están en la carpeta **target/generated-sources/xjc**, dentro del paquete **com.example.demo.wsdl.countries**
+Esta dirección en la sentencia del plugin es muy importante en esta ruta se expone el WSDL (es decir, descarga _countries.wsdl_ ), se consume el esquema y se generan las clases a partir de ésta definición. Las clases generadas están en la carpeta **target/generated-sources/xjc**, dentro del paquete **com.example.demo.wsdl.countries**
 
 Las clases generadas son:
 * Country
@@ -115,27 +115,27 @@ Las clases generadas son:
 
 ## Crear el SOAP Service Client: el paquete service y la clase CountryClientService
 
-Empecemos por crear un paquete y dentro de ese paquete, una clase.
+Empiece por crear un paquete y dentro de ese paquete, una clase.
 El paquete debe estar sobre **com.example.demo** y debe llamarse **com.example.demo.service**
 
-Después de crear el paquete, hay que crear la clase **CountryClientService**
+Después cree la clase **CountryClientService**
 
 El código para esta clase es el siguiente:
 
-``package com.example.demo.service;``
+``package com.example.demo.service;
 
-``import com.example.demo.wsdl.countries.GetCountryRequest;``
-``import com.example.demo.wsdl.countries.GetCountryResponse;``
-``import org.slf4j.Logger;``
-``import org.slf4j.LoggerFactory;``
-``import org.springframework.ws.client.core.support.WebServiceGatewaySupport;``
-``import org.springframework.ws.soap.client.core.SoapActionCallback;``
+import com.example.demo.wsdl.countries.GetCountryRequest;
+import com.example.demo.wsdl.countries.GetCountryResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import org.springframework.ws.soap.client.core.SoapActionCallback;``
 
-``public class CountryClientService extends WebServiceGatewaySupport {``
+``public class CountryClientService extends WebServiceGatewaySupport {
 
-   ``private static final Logger log = LoggerFactory.getLogger(CountryClientService.class);``
+   private static final Logger log = LoggerFactory.getLogger(CountryClientService.class);
 
-   ``public GetCountryResponse getCountry(String country) {``
+   public GetCountryResponse getCountry(String country) {
 
        GetCountryRequest request = new GetCountryRequest();
        request.setName(country);
@@ -146,14 +146,14 @@ El código para esta clase es el siguiente:
                .marshalSendAndReceive("http://localhost:8080/ws/countries", request,
                        new SoapActionCallback(""));
 
-       return response;
+       return response;``
    ``}``
 
 ``}``
 
-Hay que tener en cuenta que dentro de esta clase el puerto debe ser el 8080; que el paquete no sea _dto_ sino _wsdl_ :**com.example.demo.wsdl.countries**
+Tenga en cuenta que dentro de esta clase el puerto debe ser el 8080; que el paquete no sea _dto_ sino _wsdl_ :**com.example.demo.wsdl.countries**
 
-En esta clase estamos extendiendo de otra cuyo nombre es _WebServiceGatewaySupport_ y nos habilita el template _getWebServiceTemplate_ que se utiliza para generar una petición o un servicio de tipo REST. Al final estamos casteando un tipo _GetCountryResponse_ que tiene un objeto que se llama _country_ y tiene un elemento que se llama _currency_ y tenemos que contestar con ese objeto.
+En esta clase estamos aplicando un "extends", es decir, una herencia de otra clase, cuyo nombre es _WebServiceGatewaySupport_ y nos habilita el template _getWebServiceTemplate_ que se utiliza para generar una petición o un servicio de tipo REST. Al final estamos casteando un tipo _GetCountryResponse_ que tiene un objeto que se llama _country_ y tiene un elemento que se llama _currency_, por lo tanto, tenemos que contestar con ese mismo tipo de objeto.
 El request viene como tipo String, que es _country_
 
 A través de los setters le da un nombre al objeto, que es el String que estamos mandando. Al final ese objeto _GetCountryRequest_ se envía dentro del template.
@@ -203,22 +203,21 @@ La estructura de una URI es:
 * Path: el nombre incluido dentro del métodoGET, POST, etc.
 * Query String o QUery Parameters: los parámetros a enviar
 
-También hay headers que van dentro de la petición. Si voy a la consola y escribo curl --location --request GET 'http://localhost:8081/getCountry' habrá respuesta con el JSON si coloco un PUT, por ejemplo, arrojará que el método no está permitido.
+También hay headers que van dentro de la petición. En Postman, consola: si escribo curl ``--location --request GET 'http://localhost:8081/getCountry'`` habrá respuesta con el JSON. Si coloco un verbo PUT, por ejemplo, arrojará un mensaje de que el método no está permitido.
 
-Al final de una petición también hay headers, van localizados en otro lugar de la petición 
+Al final de una petición también hay headers, van localizados en otro lugar de la petición.
 
 # Tips
 
 Al nombrar los recursos, es decir, los paths de las operaciones, no es seguro nombrarlos con el verbo de la operación, sino como el sustantivo en plural, en relación con el contenido general del URI.
 
+Los servicios SOAP se usan mucho en bancos por ser muy estrictos el recibir una petición. Cuando generabas el XSD, puedes definir un dato nuevo: un tipo simple de dato e indicar que tiene una propiedad. Por ejemplo: defina un dato que solamente admita 1 caracter y 3 como máximo; o que el nombre del país sea de tipo ``miString``, ya no de tipo String. Si prueba el primer tipo de dato anteriormente propuesto, verá que no podrá enviar 4 caracteres. La utilidad de ver esto, es para proteger los legados. Puedes hacer un REST, pero si el protocolo no te permite comunicarte con estas tecnologías, de nada va a servir. Es un tema de proteger a los servicios, así como solo recibir peticiones en este protocolo, para proteger los tipos de datos que se envían. Puede darse el caso de usar expresiones regulares para un teléfono, un correo, por ejemplo. No sea que vayas a poner cuatro nombres, por ejemplo. Las validaciones pueden ser tan complicadas como se necesiten.
 
-Los servicios SOAP se usan mucho en bancos por ser muy estrictos el recibir una petición. Cuando generábamos el XSD, puedes definir un tipo simple de dato y le dices que tiene una propiedad. Si quieres que solamente te admita 1 caracter y 3 como máximo y que el nombre del país sea uno de tipo miString, ya no de tipo String. No puedes mandar 4 caracteres, es para proteger los legados, como COBOL. Puedes hacer un REST, pero si el protocolo no te permite comunicarte con estas tecnologías, de nada va a servir. Es un tema de proteger a los servicios como solo recibir en este protocolo para proteger los tipos de dartos que se envían. Se usan expresiones regulares para teléfono, correo, por ejemplo. No vayas a poner cuatro nombres, es complicado.
+Aquí en este ejemplo de servicio, harían falta validaciones. Por ejemplo, que el String no sea mayor a x.
 
-Aquí harían falta validaciones, por ejemplo que el String no sea mayor a x.
-
-El WSDL es la creación de todo lo que configuraste para crear el servicio SOAP, más la definición del XSD. Le importa el portType , las operaciones; inyecta toda la configuración que hicimos.
+El WSDL es el contenido de todo lo que se configuró para crear el servicio SOAP, más la definición del XSD. Al WSDL se le importa el portType, las operaciones; inyecta toda la configuración que realizaste.
 
 El Swagger te define lo mismo, qué tipos de datos son, qué operaciones hay, cómo va a responder pero de un REST.
 
 Para ver un Swagger: es un archivo en formato yaml y visitas [Swagger editor](editor.swagger.io)
-Es como si tuvieras un WSDL, ves qué operaciones hay, tus atributos. Los puedes delimitar pero los tienes que validar con código.
+Es como si tuvieras un WSDL, ves qué operaciones hay, tus atributos disponibles. Los puedes delimitar, pero los tienes que validar con código.
